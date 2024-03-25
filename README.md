@@ -1,5 +1,28 @@
 # Heart Rate and Breathing Rate Measurement
 
+## Get Started
+Python is a prerequisite and must be installed on your system
+
+> [!NOTE]
+> The below commands are for a Windows System. On a Linux system the activate and deactivate commands for the virtual environment change, make the change accordingly.
+
+Run the following commands to clone the repo, create a virtual environment, install required dependencies for the project
+```
+git clone https://github.com/SaiD-OS/heartnbreath.git
+cd heartnbreath
+python -m venv .
+Scripts\activate
+python -m ensurepip --upgrade
+pip install -r requirements.txt
+Scripts\deactivate.bat
+```
+
+Run the application
+```
+Scripts\activate
+python Src\index.py
+```
+
 ## Architechture
 
 1. Main Thread     -> GUI
@@ -15,7 +38,7 @@ Has all the components to load the Interface
     * Plot type selection -> Original Data Plot without any modifications, Fourier Transform on the collected data, Applying low/high pass filters, interpolation stratergies etc
     * Radar Configuration Settings
     * Variables that can be used to edit the Data modifications
-3. **PlotGUI** -> Will generate the interface for Ploting
+3. **PlotGUI** -> Will generate the interface for Plotting
 
 ### Reader
 This will perform reading from/writing to the UART channel to read sensor data and modify sensor configs
