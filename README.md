@@ -1,7 +1,7 @@
 # Heart Rate and Breathing Rate Measurement
 
 ## Get Started
-Python is a prerequisite and must be installed on your system
+Python is a prerequisite and must be installed on your system :snake:
 
 > [!NOTE]
 > The below commands are for a Windows System. On a Linux system the activate and deactivate commands for the virtual environment change, make the change accordingly.
@@ -17,7 +17,7 @@ pip install -r requirements.txt
 Scripts\deactivate.bat
 ```
 
-Run the application
+Run the application :innocent:
 ```
 Scripts\activate
 python Src\index.py

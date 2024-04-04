@@ -1,0 +1,10 @@
+{
+    "Underlying Open Function Inquiry": {
+        "Inquiry": true,
+        "Packet": [83, 89, 8, 128, 0, 1, 15]
+    },
+    "Underlying Open Function": {
+        "Inquiry": false,
+        "Packet": [83, 89, 8, 128, 0, 1]
+    }
+}

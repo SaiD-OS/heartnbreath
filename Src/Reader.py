@@ -13,7 +13,7 @@ class SerialReader():
         self.newdata = False
         self.starttime = -1
         self.fintime = -1
-        self.threading = False
+        self.threadingr = False
 
         self.parser = parser
 
@@ -21,7 +21,7 @@ class SerialReader():
         try:
             if self.ser.is_open:
                 self.ser.status = True
-        except:
+        except Exception as e:
             self.ser = serial.Serial()
             self.ser.baudrate = int(baudrate)
             self.ser.port = comport
@@ -34,11 +34,13 @@ class SerialReader():
             if self.ser.is_open:
                 self.ser.close()
                 self.ser.status = False
-        except:
+                self.ser = None
+        except Exception as e:
             self.ser.status = False
 
     def SerialReceiveStream(self):
-        while True:
+        self.threadingr = True
+        while self.threadingr:
             try:             
                 if self.ser.read() == self.msghead1:
                     self.msg = []        
@@ -49,7 +51,7 @@ class SerialReader():
                                 if self.ser.read() == self.msgtrail2:
                                     break
                                 else:
-                                    print("Error")
+                                    # print("Packet discarded")
                                     break
                             if self.char != self.newline:
                                 self.msg.append(self.char)
@@ -58,5 +60,19 @@ class SerialReader():
                 if self.newdata:
                     self.parser.msgq.put({'msg':self.msg, 'time':self.fintime-self.starttime})
                     self.newdata = False
+            except Exception as e:
+                pass
+    
+    def SerialWriteStream(self, msg = [], period=1, cyclic=False):
+        self.threadingw=True
+        while self.threadingw:
+            try:
+                for it in msg:
+                    self.ser.write(it.to_bytes(1, 'little'))
+
+                if cyclic:
+                    time.sleep(period)
+                else:
+                    self.threadingw = False
             except Exception as e:
                 print(e)
