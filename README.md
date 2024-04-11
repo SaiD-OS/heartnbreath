@@ -1,7 +1,7 @@
 # Heart Rate and Breathing Rate Measurement
 
 ## Demonstration
-<video controls src="Demo/Sample Data.mp4" title="Title"></video>
+
 
 ## Get Started
 Python is a prerequisite and must be installed on your system :snake:
