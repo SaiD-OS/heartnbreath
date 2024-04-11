@@ -2,5 +2,13 @@
     "Heart Data Switch": {
         "Inquiry": false,
         "Packet": [83, 89, 133, 0, 0, 1]
+    },
+    "Sleep Time Monitoring": {
+        "Inquiry": false,
+        "Packet": [83, 89, 132, 0, 0, 1]
+    },
+    "Real Time Monitoring Q": {
+        "Inquiry": true,
+        "Packet": [83, 89, 132, 140, 0, 1, 15]
     }
 }

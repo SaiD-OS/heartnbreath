@@ -15,13 +15,14 @@ class Parser():
         self.hhp = 1.3
         self.bhp = 0.3
         self.blp = 0.36
-        self.lenthresh = 500
+        self.lenthresh = 200
         self.threading1 = False
 
         # contains functions used to manipulate data for plotting
         self.fnlist = {
             "Normal": self.plainData,
-            "Heart": self.heartData
+            "Heart": self.heartData,
+            "FFT": self.fouriertransform
         }
 
         # contains setter functions for your variable
@@ -29,7 +30,7 @@ class Parser():
             'Threshold': self.setlenthresh,
             'Heart HPF': self.sethhp,
             'Heart LPF': self.sethlp,
-            'Breath HPF': self.setbhp,
+            'Sample': self.fs,
             'Breath LPF': self.setblp,
         }
 
@@ -105,7 +106,7 @@ class Parser():
 
     def decodeHeartSignals(self, msg):
         curr = msg['msg']
-        ti = msg['time'] + 1       
+        ti = msg['time'] + 1     
         if curr != None and len(curr) >= 9 and ord(curr[0]) == 133 and (ord(curr[1]) == 5 or ord(curr[1]) == 133):
             self.yd.append(ord(curr[4]))
             self.yd.append(ord(curr[5]))
@@ -128,6 +129,8 @@ class Parser():
                 self.yd.pop(0)
                 self.xd.pop(0)
                 self.len-=1
+        elif curr != None and len(curr) >= 5 and ord(curr[0]) == 132 and ord(curr[1]) == 140:
+            print(curr[4])
 
     def plainData(self):
         return self.xd, self.yd
@@ -143,6 +146,11 @@ class Parser():
         bWave = self.allPass(np.array(self.yd), self.bhp, self.fs, highP=True)
         bWave = self.allPass(bWave, self.blp, self.fs)
         return ti, bWave
+
+    def fouriertransform(self):
+        fft = np.fft.fft(self.yd)/20
+        freqdomain = np.fft.fftfreq(len(self.yd), 1/self.fs)
+        return freqdomain, np.abs(fft)
 
     def allPass(self, inputSig, cutOffF, fs, highP = False, ampScale = 1):
         leng = len(inputSig)

@@ -27,6 +27,7 @@ class SelectionGUI():
         self.root = root
         self.parser = parser
         self.reader = reader
+        self.colorscheme = ['blue', 'red', 'green', 'cyan', 'magenta', 'yellow']
         self.createMainFrame()
         self.variableEditor()
         self.radarSettings()
@@ -310,8 +311,7 @@ class SelectionGUI():
                 self.ddradar["state"] = "disabled"
                 self.reader.starttime = time.time()
                 self.reader.t1 = threading.Thread(target=self.reader.SerialReceiveStream, daemon=True)
-                self.reader.t1.start()    
-                 
+                self.reader.t1.start()                     
         else:
             self.reader.SerialClose()
             self.btnconn["text"] = "Connect"
@@ -325,6 +325,7 @@ class SelectionGUI():
             
     def updateplots1(self):
         try:
+            lines = None
             for p in range(self.pltcnt1):
                 val = self.fpltlist1[p].get()
                 if val != "-":
@@ -332,13 +333,21 @@ class SelectionGUI():
                     processingfn = self.parser.fnlist[val]
                     xd, yd = processingfn()                    
                     self.plotter.axis1[p].set_ylim(-10, 300)
-                    self.plotter.axis1[p].plot(xd, yd)
+                    l = self.plotter.axis1[p].plot(xd, yd, color=self.colorscheme[p], label=val)
+                    if lines:
+                        lines += l
+                    else:
+                        lines = l
+            if self.pltcnt1 > 0:
+
+                self.plotter.axis1[0].legend(lines, [x.get_label() for x in lines], loc='upper left')
             self.plotter.canvas1.draw()
         except Exception as e:
             print(e)
 
     def updateplots2(self):
         try:
+            lines = None
             for p in range(self.pltcnt2):
                 val = self.fpltlist2[p].get()
                 if val != "-":
@@ -346,7 +355,13 @@ class SelectionGUI():
                     processingfn = self.parser.fnlist[val]
                     xd, yd = processingfn()
                     self.plotter.axis2[p].set_ylim(-10, 300)
-                    self.plotter.axis2[p].plot(xd, yd)
+                    l = self.plotter.axis2[p].plot(xd, yd, color=self.colorscheme[p], label=val)
+                    if lines:
+                        lines += l
+                    else:
+                        lines = l
+            if self.pltcnt2 > 0:
+                self.plotter.axis2[0].legend(lines, [x.get_label() for x in lines], loc='upper left')
             self.plotter.canvas2.draw()
         except Exception as e:
             print(e)

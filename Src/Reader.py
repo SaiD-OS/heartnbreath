@@ -1,6 +1,8 @@
 import threading
 import time
 import serial
+import csv
+import datetime
 
 class SerialReader():
     def __init__(self, parser):
@@ -40,6 +42,7 @@ class SerialReader():
 
     def SerialReceiveStream(self):
         self.threadingr = True
+        filename = "Logs/radarddata-" + "{:%Y%m%d-%H%M%S}".format(datetime.datetime.now()) + ".csv"
         while self.threadingr:
             try:             
                 if self.ser.read() == self.msghead1:
@@ -58,7 +61,11 @@ class SerialReader():
                         self.fintime = time.time()
                         self.newdata = True
                 if self.newdata:
-                    self.parser.msgq.put({'msg':self.msg, 'time':self.fintime-self.starttime})
+                    timeval = self.fintime-self.starttime
+                    self.t4 = threading.Thread(
+                            target=self.SaveRawData, args=(self.msg, timeval, filename, ), daemon=True)
+                    self.t4.start()
+                    self.parser.msgq.put({'msg':self.msg, 'time':timeval})
                     self.newdata = False
             except Exception as e:
                 pass
@@ -76,3 +83,11 @@ class SerialReader():
                     self.threadingw = False
             except Exception as e:
                 print(e)
+
+
+    def SaveRawData(self, msgval, timeval, filename):
+        data = msgval.copy()
+        data.insert(0, timeval)
+        with open(filename, 'a') as csvfile:  
+            csvwriter = csv.writer(csvfile)
+            csvwriter.writerow(data)  
