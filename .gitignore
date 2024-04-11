@@ -4,3 +4,4 @@ Scripts/
 share/
 Src/__pycache__/
 pyvenv.cfg
+Logs/*.csv
